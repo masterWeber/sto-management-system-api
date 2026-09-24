@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -17,12 +18,14 @@ import type { AuthenticatedRequest } from '../../shared/interface/authenticated-
 import { Roles } from '../../shared/interface/decorators/roles.decorator.js';
 import { JwtAuthGuard } from '../../shared/interface/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../../shared/interface/guards/roles.guard.js';
+import { PaginationQueryDto } from '../../shared/interface/dto/pagination-query.dto.js';
 import { CreateStaffUseCase } from '../application/use-cases/create-staff.use-case.js';
 import { DeactivateStaffUseCase } from '../application/use-cases/deactivate-staff.use-case.js';
 import { GetStaffUseCase } from '../application/use-cases/get-staff.use-case.js';
 import { ListStaffUseCase } from '../application/use-cases/list-staff.use-case.js';
 import { UpdateStaffUseCase } from '../application/use-cases/update-staff.use-case.js';
 import { CreateStaffDto } from './dto/create-staff.dto.js';
+import { StaffPageResponseDto } from './dto/staff-page.response.dto.js';
 import { StaffResponseDto } from './dto/staff.response.dto.js';
 import { UpdateStaffDto } from './dto/update-staff.dto.js';
 
@@ -49,9 +52,9 @@ export class StaffController {
   @Get()
   @ApiOperation({ summary: 'Список сотрудников' })
   @Roles(Role.ADMIN)
-  async list(): Promise<StaffResponseDto[]> {
-    const staff = await this.listStaff.execute();
-    return staff.map(StaffResponseDto.fromDomain);
+  async list(@Query() pagination: PaginationQueryDto): Promise<StaffPageResponseDto> {
+    const result = await this.listStaff.execute(pagination);
+    return StaffPageResponseDto.fromDomain(result);
   }
 
   @Get(':id')

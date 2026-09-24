@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import type { PaginatedResult, PaginationParams } from '../../../shared/domain/pagination.js';
 import {
   STAFF_REPOSITORY,
   type StaffRepository,
@@ -11,7 +12,7 @@ export class ListStaffUseCase {
     @Inject(STAFF_REPOSITORY) private readonly staffRepository: StaffRepository,
   ) {}
 
-  async execute(): Promise<StaffUser[]> {
-    return this.staffRepository.findAll();
+  async execute(pagination: PaginationParams): Promise<PaginatedResult<StaffUser>> {
+    return this.staffRepository.findAll(pagination);
   }
 }

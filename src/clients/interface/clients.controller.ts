@@ -22,6 +22,7 @@ import { GetClientUseCase } from '../application/use-cases/get-client.use-case.j
 import { ListClientsUseCase } from '../application/use-cases/list-clients.use-case.js';
 import { UpdateClientUseCase } from '../application/use-cases/update-client.use-case.js';
 import { ClientResponseDto } from './dto/client.response.dto.js';
+import { ClientsPageResponseDto } from './dto/clients-page.response.dto.js';
 import { CreateClientDto } from './dto/create-client.dto.js';
 import { SearchClientsDto } from './dto/search-clients.dto.js';
 import { UpdateClientDto } from './dto/update-client.dto.js';
@@ -42,9 +43,10 @@ export class ClientsController {
   @Get()
   @ApiOperation({ summary: 'Список клиентов с поиском по ФИО и телефону' })
   @Roles(Role.ADMIN, Role.MANAGER, Role.MASTER)
-  async list(@Query() query: SearchClientsDto): Promise<ClientResponseDto[]> {
-    const clients = await this.listClients.execute(query);
-    return clients.map(ClientResponseDto.fromDomain);
+  async list(@Query() query: SearchClientsDto): Promise<ClientsPageResponseDto> {
+    const { page, limit, ...filters } = query;
+    const result = await this.listClients.execute(filters, { page, limit });
+    return ClientsPageResponseDto.fromDomain(result);
   }
 
   @Get(':id')

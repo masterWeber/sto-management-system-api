@@ -6,6 +6,7 @@ import type {
   ClientSearchFilters,
 } from '../domain/client-repository.port.js';
 import { Client } from '../domain/client.entity.js';
+import type { PaginatedResult, PaginationParams } from '../../shared/domain/pagination.js';
 import { ClientMapper } from './persistence/client.mapper.js';
 import { ClientOrmEntity } from './persistence/client.orm-entity.js';
 
@@ -21,7 +22,10 @@ export class TypeOrmClientRepository implements ClientRepository {
     return orm ? ClientMapper.toDomain(orm) : null;
   }
 
-  async findAll(filters: ClientSearchFilters): Promise<Client[]> {
+  async findAll(
+    filters: ClientSearchFilters,
+    pagination: PaginationParams,
+  ): Promise<PaginatedResult<Client>> {
     const query = this.repository.createQueryBuilder('client');
     if (filters.search) {
       query.andWhere(
@@ -32,8 +36,16 @@ export class TypeOrmClientRepository implements ClientRepository {
     if (filters.phone) {
       query.andWhere('client.phone ILIKE :phone', { phone: `%${filters.phone}%` });
     }
-    const orms = await query.getMany();
-    return orms.map(ClientMapper.toDomain);
+    const [orms, total] = await query
+      .skip((pagination.page - 1) * pagination.limit)
+      .take(pagination.limit)
+      .getManyAndCount();
+    return {
+      items: orms.map(ClientMapper.toDomain),
+      total,
+      page: pagination.page,
+      limit: pagination.limit,
+    };
   }
 
   async save(client: Client): Promise<Client> {
