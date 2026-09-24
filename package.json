@@ -15,11 +15,11 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "oxlint --type-aware src/ test/",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:cov": "vitest run --coverage",
-    "test:debug": "vitest --inspect-brk --no-file-parallelism",
-    "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --config jest.config.js",
+    "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --config jest.config.js --watch",
+    "test:cov": "node --experimental-vm-modules node_modules/.bin/jest --config jest.config.js --coverage",
+    "test:debug": "node --experimental-vm-modules node_modules/.bin/jest --config jest.config.js --runInBand",
+    "test:e2e": "node --experimental-vm-modules node_modules/.bin/jest --config jest.e2e.config.js",
     "migration:generate": "npm run build && typeorm migration:generate -d dist/data-source.js --esm",
     "migration:run": "npm run build && typeorm migration:run -d dist/data-source.js",
     "migration:revert": "npm run build && typeorm migration:revert -d dist/data-source.js"
@@ -48,17 +48,17 @@
     "@nestjs/schematics": "^12.0.0",
     "@nestjs/testing": "^12.0.1",
     "@types/express": "^5.0.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^7.0.0",
-    "@vitest/coverage-v8": "^4.1.2",
+    "jest": "^30.5.2",
     "oxlint": "^1.58.0",
     "oxlint-tsgolint": "^7.0.2001",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
-    "typescript": "^6.0.2",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^4.1.2"
+    "ts-jest": "^29.4.13",
+    "typescript": "^6.0.2"
   }
 }
