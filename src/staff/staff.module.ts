@@ -9,6 +9,7 @@ import { DeactivateStaffUseCase } from './application/use-cases/deactivate-staff
 import { GetStaffUseCase } from './application/use-cases/get-staff.use-case.js';
 import { ListStaffUseCase } from './application/use-cases/list-staff.use-case.js';
 import { StaffController } from './interface/staff.controller.js';
+import { SeedAdminService } from './application/seed-admin.service.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([StaffUserOrmEntity])],
@@ -20,6 +21,7 @@ import { StaffController } from './interface/staff.controller.js';
     DeactivateStaffUseCase,
     GetStaffUseCase,
     ListStaffUseCase,
+    SeedAdminService,
   ],
   exports: [STAFF_REPOSITORY],
 })
