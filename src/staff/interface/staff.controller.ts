@@ -12,13 +12,28 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { Role } from '../../shared/domain/role.js';
 import type { AuthenticatedRequest } from '../../shared/interface/authenticated-request.js';
+import { PaginationQueryDto } from '../../shared/interface/dto/pagination-query.dto.js';
+import {
+  ErrorCode,
+  ErrorResponseDto,
+  FORBIDDEN_EXAMPLE,
+  UNAUTHORIZED_EXAMPLE,
+} from '../../shared/interface/dto/error-response.dto.js';
 import { Roles } from '../../shared/interface/decorators/roles.decorator.js';
 import { JwtAuthGuard } from '../../shared/interface/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../../shared/interface/guards/roles.guard.js';
-import { PaginationQueryDto } from '../../shared/interface/dto/pagination-query.dto.js';
 import { CreateStaffUseCase } from '../application/use-cases/create-staff.use-case.js';
 import { DeactivateStaffUseCase } from '../application/use-cases/deactivate-staff.use-case.js';
 import { GetStaffUseCase } from '../application/use-cases/get-staff.use-case.js';
@@ -31,6 +46,11 @@ import { UpdateStaffDto } from './dto/update-staff.dto.js';
 
 @ApiTags('staff')
 @ApiBearerAuth()
+@ApiUnauthorizedResponse({
+  type: ErrorResponseDto,
+  description: 'Не авторизован',
+  example: UNAUTHORIZED_EXAMPLE,
+})
 @Controller('staff')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class StaffController {
@@ -51,6 +71,20 @@ export class StaffController {
 
   @Get()
   @ApiOperation({ summary: 'Список сотрудников' })
+  @ApiForbiddenResponse({
+    type: ErrorResponseDto,
+    description: 'Недостаточно прав',
+    example: FORBIDDEN_EXAMPLE,
+  })
+  @ApiBadRequestResponse({
+    type: ErrorResponseDto,
+    description: 'Некорректные параметры пагинации',
+    example: {
+      statusCode: 400,
+      error: ErrorCode.BAD_REQUEST,
+      message: ['limit must not be greater than 100'],
+    },
+  })
   @Roles(Role.ADMIN)
   async list(@Query() pagination: PaginationQueryDto): Promise<StaffPageResponseDto> {
     const result = await this.listStaff.execute(pagination);
@@ -59,6 +93,20 @@ export class StaffController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Получить сотрудника по ID' })
+  @ApiForbiddenResponse({
+    type: ErrorResponseDto,
+    description: 'Недостаточно прав',
+    example: FORBIDDEN_EXAMPLE,
+  })
+  @ApiNotFoundResponse({
+    type: ErrorResponseDto,
+    description: 'Сотрудник не найден',
+    example: {
+      statusCode: 404,
+      error: ErrorCode.NOT_FOUND_ERROR,
+      message: 'StaffUser with id 999 not found',
+    },
+  })
   @Roles(Role.ADMIN)
   async get(@Param('id', ParseIntPipe) id: number): Promise<StaffResponseDto> {
     const staffUser = await this.getStaff.execute(id);
@@ -67,6 +115,29 @@ export class StaffController {
 
   @Post()
   @ApiOperation({ summary: 'Создать учётную запись сотрудника' })
+  @ApiForbiddenResponse({
+    type: ErrorResponseDto,
+    description: 'Недостаточно прав',
+    example: FORBIDDEN_EXAMPLE,
+  })
+  @ApiBadRequestResponse({
+    type: ErrorResponseDto,
+    description: 'Ошибка валидации',
+    example: {
+      statusCode: 400,
+      error: ErrorCode.BAD_REQUEST,
+      message: ['password must be longer than or equal to 8 characters'],
+    },
+  })
+  @ApiConflictResponse({
+    type: ErrorResponseDto,
+    description: 'Логин уже занят',
+    example: {
+      statusCode: 409,
+      error: ErrorCode.CONFLICT_ERROR,
+      message: 'Login "ivan" is already taken',
+    },
+  })
   @Roles(Role.ADMIN)
   async create(@Body() dto: CreateStaffDto): Promise<StaffResponseDto> {
     const staffUser = await this.createStaff.execute(dto);
@@ -75,6 +146,29 @@ export class StaffController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Обновить ФИО или роль сотрудника' })
+  @ApiForbiddenResponse({
+    type: ErrorResponseDto,
+    description: 'Недостаточно прав',
+    example: FORBIDDEN_EXAMPLE,
+  })
+  @ApiNotFoundResponse({
+    type: ErrorResponseDto,
+    description: 'Сотрудник не найден',
+    example: {
+      statusCode: 404,
+      error: ErrorCode.NOT_FOUND_ERROR,
+      message: 'StaffUser with id 999 not found',
+    },
+  })
+  @ApiBadRequestResponse({
+    type: ErrorResponseDto,
+    description: 'Ошибка валидации',
+    example: {
+      statusCode: 400,
+      error: ErrorCode.BAD_REQUEST,
+      message: ['role must be a valid enum value'],
+    },
+  })
   @Roles(Role.ADMIN)
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -86,6 +180,20 @@ export class StaffController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Деактивировать сотрудника (soft-delete)' })
+  @ApiForbiddenResponse({
+    type: ErrorResponseDto,
+    description: 'Недостаточно прав',
+    example: FORBIDDEN_EXAMPLE,
+  })
+  @ApiNotFoundResponse({
+    type: ErrorResponseDto,
+    description: 'Сотрудник не найден',
+    example: {
+      statusCode: 404,
+      error: ErrorCode.NOT_FOUND_ERROR,
+      message: 'StaffUser with id 999 not found',
+    },
+  })
   @Roles(Role.ADMIN)
   @HttpCode(204)
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
