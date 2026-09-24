@@ -5,6 +5,8 @@ import { AuthModule } from './auth/auth.module.js';
 import { CarsModule } from './cars/cars.module.js';
 import { ClientsModule } from './clients/clients.module.js';
 import { dataSourceOptions } from './data-source.js';
+import { ExpensesModule } from './expenses/expenses.module.js';
+import { FinanceModule } from './finance/finance.module.js';
 import { HealthController } from './health.controller.js';
 import { OrdersModule } from './orders/orders.module.js';
 import { PriceListModule } from './price-list/price-list.module.js';
@@ -28,6 +30,8 @@ import { WarehouseModule } from './warehouse/warehouse.module.js';
     PriceListModule,
     WarehouseModule,
     OrdersModule,
+    ExpensesModule,
+    FinanceModule,
   ],
   controllers: [HealthController],
 })
