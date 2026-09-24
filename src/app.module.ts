@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { HealthController } from './health.controller.js';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { AppService } from './app.service.js';
       synchronize: process.env.NODE_ENV !== 'production',
     }),
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
   providers: [AppService],
 })
 export class AppModule {}
