@@ -66,6 +66,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
         return ErrorCode.NOT_FOUND_ERROR;
       case 409:
         return ErrorCode.CONFLICT_ERROR;
+      case 429:
+        return ErrorCode.THROTTLED;
       default:
         return status >= 500 ? ErrorCode.INTERNAL_SERVER_ERROR : ErrorCode.BAD_REQUEST;
     }

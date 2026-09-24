@@ -1,4 +1,5 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ApiBadRequestResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ErrorCode, ErrorResponseDto } from '../../shared/interface/dto/error-response.dto.js';
 import { LoginUseCase } from '../application/use-cases/login.use-case.js';
@@ -10,6 +11,7 @@ export class AuthController {
   constructor(private readonly login: LoginUseCase) {}
 
   @Post('login')
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @ApiOperation({ summary: 'Вход по логину и паролю, выдаёт JWT' })
   @ApiBadRequestResponse({
     type: ErrorResponseDto,

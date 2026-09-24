@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module.js';
 import { CarsModule } from './cars/cars.module.js';
 import { ClientsModule } from './clients/clients.module.js';
@@ -17,6 +19,9 @@ import { WarehouseModule } from './warehouse/warehouse.module.js';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot({
+      throttlers: [{ ttl: 60_000, limit: 100 }],
+    }),
     TypeOrmModule.forRoot({
       ...dataSourceOptions,
       autoLoadEntities: true,
@@ -34,5 +39,6 @@ import { WarehouseModule } from './warehouse/warehouse.module.js';
     FinanceModule,
   ],
   controllers: [HealthController],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}

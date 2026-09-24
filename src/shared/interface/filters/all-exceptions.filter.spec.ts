@@ -112,14 +112,14 @@ describe('AllExceptionsFilter', () => {
     });
   });
 
-  it('falls back to BAD_REQUEST for an unmapped 4xx HttpException status', () => {
+  it('maps a 429 Too Many Requests HttpException status to THROTTLED', () => {
     const { host, status, json } = createHost();
     filter.catch(new HttpException('Too many requests', HttpStatus.TOO_MANY_REQUESTS), host);
 
     expect(status).toHaveBeenCalledWith(429);
     expect(json).toHaveBeenCalledWith({
       statusCode: 429,
-      error: ErrorCode.BAD_REQUEST,
+      error: ErrorCode.THROTTLED,
       message: 'Too many requests',
     });
   });
