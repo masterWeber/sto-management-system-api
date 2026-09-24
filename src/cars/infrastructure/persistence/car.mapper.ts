@@ -3,7 +3,15 @@ import { CarOrmEntity } from './car.orm-entity.js';
 
 export class CarMapper {
   static toDomain(orm: CarOrmEntity): Car {
-    return new Car(orm.id, orm.make, orm.year, orm.licensePlate, orm.vin, orm.clientId, orm.publicId);
+    return new Car(
+      orm.id,
+      orm.make,
+      orm.year,
+      orm.licensePlate,
+      orm.vin ?? undefined,
+      orm.clientId,
+      orm.publicId,
+    );
   }
 
   static toPersistence(car: Car): CarOrmEntity {

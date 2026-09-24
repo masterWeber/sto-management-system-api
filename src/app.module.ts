@@ -6,6 +6,7 @@ import { CarsModule } from './cars/cars.module.js';
 import { ClientsModule } from './clients/clients.module.js';
 import { dataSourceOptions } from './data-source.js';
 import { HealthController } from './health.controller.js';
+import { OrdersModule } from './orders/orders.module.js';
 import { PriceListModule } from './price-list/price-list.module.js';
 import { SharedModule } from './shared/shared.module.js';
 import { StaffModule } from './staff/staff.module.js';
@@ -26,6 +27,7 @@ import { WarehouseModule } from './warehouse/warehouse.module.js';
     CarsModule,
     PriceListModule,
     WarehouseModule,
+    OrdersModule,
   ],
   controllers: [HealthController],
 })

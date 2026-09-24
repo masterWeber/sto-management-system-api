@@ -36,5 +36,6 @@ import { ServicesController } from './interface/services.controller.js';
     GetServiceUseCase,
     ListServicesUseCase,
   ],
+  exports: [SERVICE_REPOSITORY],
 })
 export class PriceListModule {}

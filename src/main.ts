@@ -21,6 +21,7 @@ async function bootstrap() {
     .addTag('services', 'Прайс-лист услуг: CRUD, поиск по названию и категории')
     .addTag('product-categories', 'Категории товаров склада: CRUD')
     .addTag('products', 'Склад: CRUD товаров, поиск по названию/артикулу, фильтр по наличию')
+    .addTag('orders', 'Заказ-наряды: создание, статус-машина, позиции работ, фильтры')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

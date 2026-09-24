@@ -22,5 +22,6 @@ import { CarsController } from './interface/cars.controller.js';
     GetCarUseCase,
     ListCarsUseCase,
   ],
+  exports: [CAR_REPOSITORY],
 })
 export class CarsModule {}

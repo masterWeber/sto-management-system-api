@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
 import type { Response } from 'express';
 import {
   ConflictError,
@@ -16,9 +16,14 @@ interface NormalizedError {
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly logger = new Logger(AllExceptionsFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const response = host.switchToHttp().getResponse<Response>();
     const { status, error, message } = AllExceptionsFilter.normalize(exception);
+    if (status >= 500) {
+      this.logger.error(exception instanceof Error ? exception.stack : exception);
+    }
     response.status(status).json({ statusCode: status, error, message });
   }
 
