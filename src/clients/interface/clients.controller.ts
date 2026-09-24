@@ -11,7 +11,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Role } from '../../shared/domain/role.js';
 import { Roles } from '../../shared/interface/decorators/roles.decorator.js';
 import { JwtAuthGuard } from '../../shared/interface/guards/jwt-auth.guard.js';
@@ -40,6 +40,7 @@ export class ClientsController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'Список клиентов с поиском по ФИО и телефону' })
   @Roles(Role.ADMIN, Role.MANAGER, Role.MASTER)
   async list(@Query() query: SearchClientsDto): Promise<ClientResponseDto[]> {
     const clients = await this.listClients.execute(query);
@@ -47,6 +48,7 @@ export class ClientsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Получить клиента по ID' })
   @Roles(Role.ADMIN, Role.MANAGER, Role.MASTER)
   async get(@Param('id', ParseIntPipe) id: number): Promise<ClientResponseDto> {
     const client = await this.getClient.execute(id);
@@ -54,6 +56,7 @@ export class ClientsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Создать клиента' })
   @Roles(Role.ADMIN, Role.MANAGER)
   async create(@Body() dto: CreateClientDto): Promise<ClientResponseDto> {
     const client = await this.createClient.execute(dto);
@@ -61,6 +64,7 @@ export class ClientsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Обновить данные клиента' })
   @Roles(Role.ADMIN, Role.MANAGER)
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -71,6 +75,7 @@ export class ClientsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Удалить клиента' })
   @Roles(Role.ADMIN, Role.MANAGER)
   @HttpCode(204)
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {

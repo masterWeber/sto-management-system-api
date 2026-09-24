@@ -12,6 +12,10 @@ async function bootstrap() {
     .setDescription('API веб-системы управления СТО')
     .setVersion('0.1')
     .addBearerAuth()
+    .addTag('health', 'Проверка работоспособности сервиса и подключения к БД')
+    .addTag('auth', 'Вход по логину/паролю, выдача JWT-токена')
+    .addTag('staff', 'Учётные записи сотрудников (Администратор/Менеджер/Мастер)')
+    .addTag('clients', 'Клиенты СТО: CRUD, поиск по ФИО и телефону')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

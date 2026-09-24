@@ -11,7 +11,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Role } from '../../shared/domain/role.js';
 import type { AuthenticatedRequest } from '../../shared/interface/authenticated-request.js';
 import { Roles } from '../../shared/interface/decorators/roles.decorator.js';
@@ -40,12 +40,14 @@ export class StaffController {
   ) {}
 
   @Get('me')
+  @ApiOperation({ summary: 'Данные текущего авторизованного сотрудника' })
   async me(@Req() request: AuthenticatedRequest): Promise<StaffResponseDto> {
     const staffUser = await this.getStaff.execute(request.user.userId);
     return StaffResponseDto.fromDomain(staffUser);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Список сотрудников' })
   @Roles(Role.ADMIN)
   async list(): Promise<StaffResponseDto[]> {
     const staff = await this.listStaff.execute();
@@ -53,6 +55,7 @@ export class StaffController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Получить сотрудника по ID' })
   @Roles(Role.ADMIN)
   async get(@Param('id', ParseIntPipe) id: number): Promise<StaffResponseDto> {
     const staffUser = await this.getStaff.execute(id);
@@ -60,6 +63,7 @@ export class StaffController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Создать учётную запись сотрудника' })
   @Roles(Role.ADMIN)
   async create(@Body() dto: CreateStaffDto): Promise<StaffResponseDto> {
     const staffUser = await this.createStaff.execute(dto);
@@ -67,6 +71,7 @@ export class StaffController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Обновить ФИО или роль сотрудника' })
   @Roles(Role.ADMIN)
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -77,6 +82,7 @@ export class StaffController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Деактивировать сотрудника (soft-delete)' })
   @Roles(Role.ADMIN)
   @HttpCode(204)
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
