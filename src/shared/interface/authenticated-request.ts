@@ -2,7 +2,7 @@ import type { Request } from 'express';
 import type { Role } from '../domain/role.js';
 
 export interface AuthenticatedUser {
-  userId: number;
+  userId: string;
   role: Role;
 }
 

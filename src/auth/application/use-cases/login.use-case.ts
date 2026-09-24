@@ -40,6 +40,6 @@ export class LoginUseCase {
       throw new ValidationError('Invalid login or password');
     }
 
-    return this.authTokenService.issue({ userId: staffUser.id!, role: staffUser.role });
+    return this.authTokenService.issue({ userId: staffUser.publicId, role: staffUser.role });
   }
 }

@@ -11,9 +11,9 @@ export class DeactivateStaffUseCase {
     @Inject(STAFF_REPOSITORY) private readonly staffRepository: StaffRepository,
   ) {}
 
-  async execute(id: number): Promise<void> {
-    const staffUser = await this.staffRepository.findById(id);
-    if (!staffUser) throw new NotFoundError('StaffUser', id);
+  async execute(publicId: string): Promise<void> {
+    const staffUser = await this.staffRepository.findByPublicId(publicId);
+    if (!staffUser) throw new NotFoundError('StaffUser', publicId);
     staffUser.deactivate();
     await this.staffRepository.save(staffUser);
   }

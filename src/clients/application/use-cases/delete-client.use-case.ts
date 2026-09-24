@@ -11,9 +11,9 @@ export class DeleteClientUseCase {
     @Inject(CLIENT_REPOSITORY) private readonly clientRepository: ClientRepository,
   ) {}
 
-  async execute(id: number): Promise<void> {
-    const client = await this.clientRepository.findById(id);
-    if (!client) throw new NotFoundError('Client', id);
-    await this.clientRepository.delete(id);
+  async execute(publicId: string): Promise<void> {
+    const client = await this.clientRepository.findByPublicId(publicId);
+    if (!client) throw new NotFoundError('Client', publicId);
+    await this.clientRepository.delete(client.id!);
   }
 }

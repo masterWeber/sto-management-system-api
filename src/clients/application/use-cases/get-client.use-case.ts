@@ -12,9 +12,9 @@ export class GetClientUseCase {
     @Inject(CLIENT_REPOSITORY) private readonly clientRepository: ClientRepository,
   ) {}
 
-  async execute(id: number): Promise<Client> {
-    const client = await this.clientRepository.findById(id);
-    if (!client) throw new NotFoundError('Client', id);
+  async execute(publicId: string): Promise<Client> {
+    const client = await this.clientRepository.findByPublicId(publicId);
+    if (!client) throw new NotFoundError('Client', publicId);
     return client;
   }
 }

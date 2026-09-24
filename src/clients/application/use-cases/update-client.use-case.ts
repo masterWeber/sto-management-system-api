@@ -18,9 +18,9 @@ export class UpdateClientUseCase {
     @Inject(CLIENT_REPOSITORY) private readonly clientRepository: ClientRepository,
   ) {}
 
-  async execute(id: number, input: UpdateClientInput): Promise<Client> {
-    const client = await this.clientRepository.findById(id);
-    if (!client) throw new NotFoundError('Client', id);
+  async execute(publicId: string, input: UpdateClientInput): Promise<Client> {
+    const client = await this.clientRepository.findByPublicId(publicId);
+    if (!client) throw new NotFoundError('Client', publicId);
 
     if (input.firstName !== undefined || input.lastName !== undefined) {
       client.rename(input.firstName ?? client.firstName, input.lastName ?? client.lastName);

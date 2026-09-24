@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import type {
   ClientRepository,
   ClientSearchFilters,
 } from '../domain/client-repository.port.js';
 import { Client } from '../domain/client.entity.js';
 import type { PaginatedResult, PaginationParams } from '../../shared/domain/pagination.js';
+import { ConflictError } from '../../shared/domain/errors/domain-error.js';
 import { ClientMapper } from './persistence/client.mapper.js';
 import { ClientOrmEntity } from './persistence/client.orm-entity.js';
+
+const POSTGRES_FOREIGN_KEY_VIOLATION = '23503';
 
 @Injectable()
 export class TypeOrmClientRepository implements ClientRepository {
@@ -19,6 +22,11 @@ export class TypeOrmClientRepository implements ClientRepository {
 
   async findById(id: number): Promise<Client | null> {
     const orm = await this.repository.findOneBy({ id });
+    return orm ? ClientMapper.toDomain(orm) : null;
+  }
+
+  async findByPublicId(publicId: string): Promise<Client | null> {
+    const orm = await this.repository.findOneBy({ publicId });
     return orm ? ClientMapper.toDomain(orm) : null;
   }
 
@@ -54,6 +62,16 @@ export class TypeOrmClientRepository implements ClientRepository {
   }
 
   async delete(id: number): Promise<void> {
-    await this.repository.delete(id);
+    try {
+      await this.repository.delete(id);
+    } catch (error) {
+      if (
+        error instanceof QueryFailedError &&
+        (error.driverError as { code?: string }).code === POSTGRES_FOREIGN_KEY_VIOLATION
+      ) {
+        throw new ConflictError('Client has associated records and cannot be deleted');
+      }
+      throw error;
+    }
   }
 }

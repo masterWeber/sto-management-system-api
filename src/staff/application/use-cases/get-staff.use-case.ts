@@ -12,9 +12,9 @@ export class GetStaffUseCase {
     @Inject(STAFF_REPOSITORY) private readonly staffRepository: StaffRepository,
   ) {}
 
-  async execute(id: number): Promise<StaffUser> {
-    const staffUser = await this.staffRepository.findById(id);
-    if (!staffUser) throw new NotFoundError('StaffUser', id);
+  async execute(publicId: string): Promise<StaffUser> {
+    const staffUser = await this.staffRepository.findByPublicId(publicId);
+    if (!staffUser) throw new NotFoundError('StaffUser', publicId);
     return staffUser;
   }
 }

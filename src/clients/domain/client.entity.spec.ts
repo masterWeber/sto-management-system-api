@@ -15,4 +15,11 @@ describe('Client', () => {
     const client = new Client(undefined, 'Ivan', 'Ivanov', '+79001234567');
     expect(() => client.changePhone('   ')).toThrow(ValidationError);
   });
+
+  it('auto-generates a unique publicId when none is given', () => {
+    const a = new Client(undefined, 'Ivan', 'Ivanov', '+79001234567');
+    const b = new Client(undefined, 'Petr', 'Petrov', '+79007654321');
+    expect(a.publicId).toMatch(/^[0-9a-f-]{36}$/);
+    expect(a.publicId).not.toBe(b.publicId);
+  });
 });

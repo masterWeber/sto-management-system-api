@@ -10,12 +10,14 @@ export class StaffUserMapper {
       orm.passwordHash,
       orm.role,
       orm.isActive,
+      orm.publicId,
     );
   }
 
   static toPersistence(staffUser: StaffUser): StaffUserOrmEntity {
     const orm = new StaffUserOrmEntity();
     if (staffUser.id !== undefined) orm.id = staffUser.id;
+    orm.publicId = staffUser.publicId;
     orm.fullName = staffUser.fullName;
     orm.login = staffUser.login;
     orm.passwordHash = staffUser.passwordHash;

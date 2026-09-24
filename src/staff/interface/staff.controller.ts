@@ -5,7 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
-  ParseIntPipe,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -104,11 +104,11 @@ export class StaffController {
     example: {
       statusCode: 404,
       error: ErrorCode.NOT_FOUND_ERROR,
-      message: 'StaffUser with id 999 not found',
+      message: 'StaffUser with id 3fa85f64-5717-4562-b3fc-2c963f66afa6 not found',
     },
   })
   @Roles(Role.ADMIN)
-  async get(@Param('id', ParseIntPipe) id: number): Promise<StaffResponseDto> {
+  async get(@Param('id', ParseUUIDPipe) id: string): Promise<StaffResponseDto> {
     const staffUser = await this.getStaff.execute(id);
     return StaffResponseDto.fromDomain(staffUser);
   }
@@ -157,7 +157,7 @@ export class StaffController {
     example: {
       statusCode: 404,
       error: ErrorCode.NOT_FOUND_ERROR,
-      message: 'StaffUser with id 999 not found',
+      message: 'StaffUser with id 3fa85f64-5717-4562-b3fc-2c963f66afa6 not found',
     },
   })
   @ApiBadRequestResponse({
@@ -171,7 +171,7 @@ export class StaffController {
   })
   @Roles(Role.ADMIN)
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateStaffDto,
   ): Promise<StaffResponseDto> {
     const staffUser = await this.updateStaff.execute(id, dto);
@@ -191,12 +191,12 @@ export class StaffController {
     example: {
       statusCode: 404,
       error: ErrorCode.NOT_FOUND_ERROR,
-      message: 'StaffUser with id 999 not found',
+      message: 'StaffUser with id 3fa85f64-5717-4562-b3fc-2c963f66afa6 not found',
     },
   })
   @Roles(Role.ADMIN)
   @HttpCode(204)
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.deactivateStaff.execute(id);
   }
 }

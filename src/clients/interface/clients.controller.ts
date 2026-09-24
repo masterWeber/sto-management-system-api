@@ -5,7 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
-  ParseIntPipe,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -14,6 +14,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiConflictResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOperation,
@@ -90,11 +91,11 @@ export class ClientsController {
     example: {
       statusCode: 404,
       error: ErrorCode.NOT_FOUND_ERROR,
-      message: 'Client with id 999 not found',
+      message: 'Client with id 3fa85f64-5717-4562-b3fc-2c963f66afa6 not found',
     },
   })
   @Roles(Role.ADMIN, Role.MANAGER, Role.MASTER)
-  async get(@Param('id', ParseIntPipe) id: number): Promise<ClientResponseDto> {
+  async get(@Param('id', ParseUUIDPipe) id: string): Promise<ClientResponseDto> {
     const client = await this.getClient.execute(id);
     return ClientResponseDto.fromDomain(client);
   }
@@ -124,7 +125,7 @@ export class ClientsController {
     example: {
       statusCode: 404,
       error: ErrorCode.NOT_FOUND_ERROR,
-      message: 'Client with id 999 not found',
+      message: 'Client with id 3fa85f64-5717-4562-b3fc-2c963f66afa6 not found',
     },
   })
   @ApiBadRequestResponse({
@@ -138,7 +139,7 @@ export class ClientsController {
   })
   @Roles(Role.ADMIN, Role.MANAGER)
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateClientDto,
   ): Promise<ClientResponseDto> {
     const client = await this.updateClient.execute(id, dto);
@@ -153,12 +154,21 @@ export class ClientsController {
     example: {
       statusCode: 404,
       error: ErrorCode.NOT_FOUND_ERROR,
-      message: 'Client with id 999 not found',
+      message: 'Client with id 3fa85f64-5717-4562-b3fc-2c963f66afa6 not found',
+    },
+  })
+  @ApiConflictResponse({
+    type: ErrorResponseDto,
+    description: 'У клиента есть связанные записи (например, автомобили)',
+    example: {
+      statusCode: 409,
+      error: ErrorCode.CONFLICT_ERROR,
+      message: 'Client has associated records and cannot be deleted',
     },
   })
   @Roles(Role.ADMIN, Role.MANAGER)
   @HttpCode(204)
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.deleteClient.execute(id);
   }
 }

@@ -19,6 +19,11 @@ export class TypeOrmStaffRepository implements StaffRepository {
     return orm ? StaffUserMapper.toDomain(orm) : null;
   }
 
+  async findByPublicId(publicId: string): Promise<StaffUser | null> {
+    const orm = await this.repository.findOneBy({ publicId });
+    return orm ? StaffUserMapper.toDomain(orm) : null;
+  }
+
   async findByLogin(login: string): Promise<StaffUser | null> {
     const orm = await this.repository.findOneBy({ login });
     return orm ? StaffUserMapper.toDomain(orm) : null;

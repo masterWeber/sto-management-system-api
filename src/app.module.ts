@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module.js';
+import { CarsModule } from './cars/cars.module.js';
 import { ClientsModule } from './clients/clients.module.js';
 import { dataSourceOptions } from './data-source.js';
 import { HealthController } from './health.controller.js';
@@ -20,6 +21,7 @@ import { StaffModule } from './staff/staff.module.js';
     AuthModule,
     StaffModule,
     ClientsModule,
+    CarsModule,
   ],
   controllers: [HealthController],
 })

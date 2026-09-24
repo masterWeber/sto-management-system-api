@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import type { AuthenticatedUser } from '../../shared/interface/authenticated-request.js';
 
 interface JwtPayload {
-  sub: number;
+  sub: string;
   role: AuthenticatedUser['role'];
 }
 

@@ -10,6 +10,7 @@ export interface ClientSearchFilters {
 
 export interface ClientRepository {
   findById(id: number): Promise<Client | null>;
+  findByPublicId(publicId: string): Promise<Client | null>;
   findAll(
     filters: ClientSearchFilters,
     pagination: PaginationParams,

@@ -21,5 +21,6 @@ import { ClientsController } from './interface/clients.controller.js';
     GetClientUseCase,
     ListClientsUseCase,
   ],
+  exports: [CLIENT_REPOSITORY],
 })
 export class ClientsModule {}

@@ -2,14 +2,14 @@ import type { StaffUser } from '../../domain/staff-user.entity.js';
 import type { Role } from '../../../shared/domain/role.js';
 
 export class StaffResponseDto {
-  id: number;
+  id: string;
   fullName: string;
   login: string;
   role: Role;
   isActive: boolean;
 
   private constructor(staffUser: StaffUser) {
-    this.id = staffUser.id!;
+    this.id = staffUser.publicId;
     this.fullName = staffUser.fullName;
     this.login = staffUser.login;
     this.role = staffUser.role;

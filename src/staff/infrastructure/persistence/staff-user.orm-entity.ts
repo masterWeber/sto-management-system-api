@@ -12,6 +12,9 @@ export class StaffUserOrmEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Column({ type: 'uuid', unique: true })
+  publicId!: string;
+
   @Column()
   fullName!: string;
 

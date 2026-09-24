@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { ValidationError } from '../../shared/domain/errors/domain-error.js';
 
 export class Client {
@@ -6,6 +7,7 @@ export class Client {
     public firstName: string,
     public lastName: string,
     public phone: string,
+    public readonly publicId: string = randomUUID(),
   ) {
     Client.assertValidPhone(phone);
   }

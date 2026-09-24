@@ -18,9 +18,9 @@ export class UpdateStaffUseCase {
     @Inject(STAFF_REPOSITORY) private readonly staffRepository: StaffRepository,
   ) {}
 
-  async execute(id: number, input: UpdateStaffInput): Promise<StaffUser> {
-    const staffUser = await this.staffRepository.findById(id);
-    if (!staffUser) throw new NotFoundError('StaffUser', id);
+  async execute(publicId: string, input: UpdateStaffInput): Promise<StaffUser> {
+    const staffUser = await this.staffRepository.findByPublicId(publicId);
+    if (!staffUser) throw new NotFoundError('StaffUser', publicId);
 
     if (input.fullName !== undefined) staffUser.fullName = input.fullName;
     if (input.role !== undefined) staffUser.changeRole(input.role);

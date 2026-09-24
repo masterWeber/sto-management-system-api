@@ -12,6 +12,9 @@ export class ClientOrmEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Column({ type: 'uuid', unique: true })
+  publicId!: string;
+
   @Column()
   firstName!: string;
 
