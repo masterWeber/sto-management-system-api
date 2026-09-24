@@ -11,6 +11,7 @@ import { TypeOrmOrderRepository } from './infrastructure/typeorm-order.repositor
 import { AddOrderItemUseCase } from './application/use-cases/add-order-item.use-case.js';
 import { CreateOrderUseCase } from './application/use-cases/create-order.use-case.js';
 import { DeleteOrderUseCase } from './application/use-cases/delete-order.use-case.js';
+import { GenerateOrderPdfUseCase } from './application/use-cases/generate-order-pdf.use-case.js';
 import { GetOrderUseCase } from './application/use-cases/get-order.use-case.js';
 import { ListOrdersUseCase } from './application/use-cases/list-orders.use-case.js';
 import { RemoveOrderItemUseCase } from './application/use-cases/remove-order-item.use-case.js';
@@ -37,6 +38,7 @@ import { OrdersController } from './interface/orders.controller.js';
     TransitionOrderStatusUseCase,
     AddOrderItemUseCase,
     RemoveOrderItemUseCase,
+    GenerateOrderPdfUseCase,
   ],
 })
 export class OrdersModule {}

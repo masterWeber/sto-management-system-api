@@ -10,6 +10,7 @@ import {
   Post,
   Query,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -19,9 +20,11 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOperation,
+  ApiProduces,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import type { Response } from 'express';
 import { Role } from '../../shared/domain/role.js';
 import type { AuthenticatedRequest } from '../../shared/interface/authenticated-request.js';
 import {
@@ -36,6 +39,7 @@ import { RolesGuard } from '../../shared/interface/guards/roles.guard.js';
 import { AddOrderItemUseCase } from '../application/use-cases/add-order-item.use-case.js';
 import { CreateOrderUseCase } from '../application/use-cases/create-order.use-case.js';
 import { DeleteOrderUseCase } from '../application/use-cases/delete-order.use-case.js';
+import { GenerateOrderPdfUseCase } from '../application/use-cases/generate-order-pdf.use-case.js';
 import { GetOrderUseCase } from '../application/use-cases/get-order.use-case.js';
 import { ListOrdersUseCase } from '../application/use-cases/list-orders.use-case.js';
 import { RemoveOrderItemUseCase } from '../application/use-cases/remove-order-item.use-case.js';
@@ -80,6 +84,7 @@ export class OrdersController {
     private readonly transitionOrderStatus: TransitionOrderStatusUseCase,
     private readonly addOrderItem: AddOrderItemUseCase,
     private readonly removeOrderItem: RemoveOrderItemUseCase,
+    private readonly generateOrderPdf: GenerateOrderPdfUseCase,
   ) {}
 
   @Get()
@@ -278,5 +283,69 @@ export class OrdersController {
     @Param('itemId', ParseUUIDPipe) itemId: string,
   ): Promise<void> {
     await this.removeOrderItem.execute(id, itemId);
+  }
+
+  @Get(':id/act.pdf')
+  @ApiOperation({ summary: 'Скачать акт выполненных работ (доступно после статуса «Завершён»)' })
+  @ApiProduces('application/pdf')
+  @ApiNotFoundResponse({
+    type: ErrorResponseDto,
+    description: 'Заказ не найден (либо не относится к текущему мастеру)',
+    example: ORDER_NOT_FOUND_EXAMPLE,
+  })
+  @ApiConflictResponse({
+    type: ErrorResponseDto,
+    description: 'Заказ ещё не завершён',
+    example: {
+      statusCode: 409,
+      error: ErrorCode.CONFLICT_ERROR,
+      message: 'The document is available once the order is completed',
+    },
+  })
+  @Roles(Role.ADMIN, Role.MANAGER, Role.MASTER)
+  async downloadAct(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() request: AuthenticatedRequest,
+    @Res() res: Response,
+  ): Promise<void> {
+    const pdf = await this.generateOrderPdf.execute(id, 'act', {
+      role: request.user.role,
+      staffPublicId: request.user.userId,
+    });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="act-${id}.pdf"`);
+    res.send(pdf);
+  }
+
+  @Get(':id/contract.pdf')
+  @ApiOperation({ summary: 'Скачать договор (доступно после статуса «Завершён»)' })
+  @ApiProduces('application/pdf')
+  @ApiNotFoundResponse({
+    type: ErrorResponseDto,
+    description: 'Заказ не найден (либо не относится к текущему мастеру)',
+    example: ORDER_NOT_FOUND_EXAMPLE,
+  })
+  @ApiConflictResponse({
+    type: ErrorResponseDto,
+    description: 'Заказ ещё не завершён',
+    example: {
+      statusCode: 409,
+      error: ErrorCode.CONFLICT_ERROR,
+      message: 'The document is available once the order is completed',
+    },
+  })
+  @Roles(Role.ADMIN, Role.MANAGER, Role.MASTER)
+  async downloadContract(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() request: AuthenticatedRequest,
+    @Res() res: Response,
+  ): Promise<void> {
+    const pdf = await this.generateOrderPdf.execute(id, 'contract', {
+      role: request.user.role,
+      staffPublicId: request.user.userId,
+    });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="contract-${id}.pdf"`);
+    res.send(pdf);
   }
 }
