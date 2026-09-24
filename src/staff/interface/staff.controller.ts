@@ -11,6 +11,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Role } from '../../shared/domain/role.js';
 import type { AuthenticatedRequest } from '../../shared/interface/authenticated-request.js';
 import { Roles } from '../../shared/interface/decorators/roles.decorator.js';
@@ -25,6 +26,8 @@ import { CreateStaffDto } from './dto/create-staff.dto.js';
 import { StaffResponseDto } from './dto/staff.response.dto.js';
 import { UpdateStaffDto } from './dto/update-staff.dto.js';
 
+@ApiTags('staff')
+@ApiBearerAuth()
 @Controller('staff')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class StaffController {

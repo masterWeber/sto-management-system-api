@@ -11,6 +11,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Role } from '../../shared/domain/role.js';
 import { Roles } from '../../shared/interface/decorators/roles.decorator.js';
 import { JwtAuthGuard } from '../../shared/interface/guards/jwt-auth.guard.js';
@@ -25,6 +26,8 @@ import { CreateClientDto } from './dto/create-client.dto.js';
 import { SearchClientsDto } from './dto/search-clients.dto.js';
 import { UpdateClientDto } from './dto/update-client.dto.js';
 
+@ApiTags('clients')
+@ApiBearerAuth()
 @Controller('clients')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ClientsController {
