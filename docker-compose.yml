@@ -10,6 +10,7 @@ services:
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
       DB_NAME: ${DB_NAME:-sto_management_system}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me}
     volumes:
       - .:/app
       - /app/node_modules
