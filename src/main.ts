@@ -16,6 +16,11 @@ async function bootstrap() {
     .addTag('auth', 'Вход по логину/паролю, выдача JWT-токена')
     .addTag('staff', 'Учётные записи сотрудников (Администратор/Менеджер/Мастер)')
     .addTag('clients', 'Клиенты СТО: CRUD, поиск по ФИО и телефону')
+    .addTag('cars', 'Автомобили клиентов: CRUD, поиск по госномеру и клиенту')
+    .addTag('service-categories', 'Категории услуг прайс-листа: CRUD')
+    .addTag('services', 'Прайс-лист услуг: CRUD, поиск по названию и категории')
+    .addTag('product-categories', 'Категории товаров склада: CRUD')
+    .addTag('products', 'Склад: CRUD товаров, поиск по названию/артикулу, фильтр по наличию')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
