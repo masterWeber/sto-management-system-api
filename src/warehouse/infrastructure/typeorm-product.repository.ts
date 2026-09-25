@@ -30,7 +30,10 @@ export class TypeOrmProductRepository implements ProductRepository {
   ): Promise<PaginatedResult<Product>> {
     const query = this.repository.createQueryBuilder('product');
     if (filters.search) {
-      query.andWhere('product.name ILIKE :search', { search: `%${filters.search}%` });
+      query.andWhere(
+        '(product.name ILIKE :search OR product.sku ILIKE :search)',
+        { search: `%${filters.search}%` },
+      );
     }
     if (filters.sku) {
       query.andWhere('product.sku ILIKE :sku', { sku: `%${filters.sku}%` });

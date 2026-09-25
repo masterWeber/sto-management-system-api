@@ -35,7 +35,7 @@ export class TypeOrmClientRepository implements ClientRepository {
     const query = this.repository.createQueryBuilder('client');
     if (filters.search) {
       query.andWhere(
-        '(client.firstName ILIKE :search OR client.lastName ILIKE :search)',
+        '(client.firstName ILIKE :search OR client.lastName ILIKE :search OR client.phone ILIKE :search)',
         { search: `%${filters.search}%` },
       );
     }
